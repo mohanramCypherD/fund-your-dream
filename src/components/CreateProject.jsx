@@ -1,25 +1,25 @@
-import { useState } from 'react'
-import { FaTimes } from 'react-icons/fa'
-import { toast } from 'react-toastify'
-import { createProject } from '../services/blockchain'
-import { useGlobalState, setGlobalState } from '../store'
+import { useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { createProject } from "../services/blockchain";
+import { useGlobalState, setGlobalState } from "../store";
 
 const CreateProject = () => {
-  const [createModal] = useGlobalState('createModal')
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [cost, setCost] = useState('')
-  const [date, setDate] = useState('')
-  const [imageURL, setImageURL] = useState('')
+  const [createModal] = useGlobalState("createModal");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [cost, setCost] = useState("");
+  const [date, setDate] = useState("");
+  const [imageURL, setImageURL] = useState("");
 
   const toTimestamp = (dateStr) => {
-    const dateObj = Date.parse(dateStr)
-    return dateObj / 1000
-  }
+    const dateObj = Date.parse(dateStr);
+    return dateObj / 1000;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!title || !description || !cost || !date || !imageURL) return
+    e.preventDefault();
+    if (!title || !description || !cost || !date || !imageURL) return;
 
     const params = {
       title,
@@ -27,25 +27,25 @@ const CreateProject = () => {
       cost,
       expiresAt: toTimestamp(date),
       imageURL,
-    }
+    };
 
-    await createProject(params)
-    toast.success('Project created successfully, will reflect in 30sec.')
-    onClose()
-  }
+    await createProject(params);
+    toast.success("Project created successfully, will reflect in 30sec.");
+    onClose();
+  };
 
   const onClose = () => {
-    setGlobalState('createModal', 'scale-0')
-    reset()
-  }
+    setGlobalState("createModal", "scale-0");
+    reset();
+  };
 
   const reset = () => {
-    setTitle('')
-    setCost('')
-    setDescription('')
-    setImageURL('')
-    setDate('')
-  }
+    setTitle("");
+    setCost("");
+    setDescription("");
+    setImageURL("");
+    setDate("");
+  };
 
   return (
     <div
@@ -74,7 +74,7 @@ const CreateProject = () => {
               <img
                 src={
                   imageURL ||
-                  'https://media.wired.com/photos/5926e64caf95806129f50fde/master/pass/AnkiHP.jpg'
+                  "https://media.wired.com/photos/5926e64caf95806129f50fde/master/pass/AnkiHP.jpg"
                 }
                 alt="project title"
                 className="h-full w-full object-cover cursor-pointer"
@@ -129,7 +129,12 @@ const CreateProject = () => {
               type="date"
               name="date"
               placeholder="Expires"
-              onChange={(e) => setDate(e.target.value)}
+              onChange={(e) => {
+                console.log(typeof e.target.value);
+                if (new Date(e.target.value) > new Date())
+                  setDate(e.target.value);
+                else alert("Please choose a upcoming date");
+              }}
               value={date}
               required
             />
@@ -180,7 +185,7 @@ const CreateProject = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreateProject
+export default CreateProject;
